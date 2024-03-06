@@ -140,7 +140,9 @@ var agecatCenters = { // Center locations of the bubbles.
     'Keine Antwort': 920
     
   };
-
+    
+    
+    
 
 // Vierter Button: Bildschirmzeit
     
@@ -161,6 +163,62 @@ var agecatCenters = { // Center locations of the bubbles.
     '4h bis 5h': 730,
     'mehr als 5h': 900
   };
+    
+    
+    // Fünfter Button: Sorgenbarometer
+    
+  var sorgenCenters = { // Center locations of the bubbles. 
+    '1': { x: 330, y: height / 1.9  },
+    '2': { x: 450, y: height / 1.9  },
+    '3': { x: 600, y: height / 2  },
+    '4': { x: 750, y: height / 2  }
+    
+  };
+
+  var sorgenTitleX = {  // X locations of the year titles.
+    'Stimmt ganz': 200,
+    'Stimmt eher': 380,
+    'Stimmt eher nicht': 660,
+    'Stimmt gar nicht': 920
+    
+  };
+
+   // Sechster Button: Griffweite
+    
+  var reachCenters = { // Center locations of the bubbles. 
+    '1': { x: 330, y: height / 1.9  },
+    '2': { x: 450, y: height / 1.9  },
+    '3': { x: 600, y: height / 2  },
+    '4': { x: 750, y: height / 2  }
+    
+  };
+
+  var reachTitleX = {  // X locations of the year titles.
+    'Ja': 200,
+    'eher ja': 460,
+    'eher nein': 670,
+    'nein': 890
+    
+  };
+
+     // Siebter Button: Day
+    
+  var dayCenters = { // Center locations of the bubbles. 
+    '1': { x: 330, y: height / 1.9  },
+    '2': { x: 450, y: height / 1.9  },
+    '3': { x: 600, y: height / 2  },
+    '4': { x: 750, y: height / 2  }
+    
+  };
+
+  var dayTitleX = {  // X locations of the year titles.
+    'Stimmt ganz': 200,
+    'Stimmt eher': 380,
+    'Stimmt eher nicht': 660,
+    'Stimmt gar nicht': 920
+    
+  };
+
     
 
        
@@ -230,7 +288,14 @@ var agecatCenters = { // Center locations of the bubbles.
           
         sex: d.geschlecht,
           
-       
+        sorgen: d.sorgenbarometerkat, // Sorgen import 1,2,3,4
+        sorgentext: d.sorgenbarometer, // Sorgen import Texte
+          
+        reach: d.griffweitekat,
+        reachtext: d.griffweite,
+          
+        day: d.verzicht,
+        daytext: d.verzichtkat,
         
         x: Math.random() * 900,
         y: Math.random() * 800
@@ -327,6 +392,9 @@ var agecatCenters = { // Center locations of the bubbles.
     hideAgecat();
     hideSex();
     hideScreentime();
+    hideSorgen();
+    hideReach();
+    hideDay();
 
     
     force.on('tick', function (e) {
@@ -369,6 +437,9 @@ Die Positionierung basiert auf dem alpha Parameter des force layouts und wird kl
     hideAgecat();
     hideSex();
     hideScreentime();
+    hideSorgen();
+    hideReach();
+    hideDay();
 
 
     force.on('tick', function (e) {
@@ -417,6 +488,9 @@ function moveToYear(alpha) {
     hideYear();
     hideSex();
     hideScreentime();
+    hideSorgen();
+    hideReach();
+    hideDay();
 
 
     force.on('tick', function (e) {
@@ -465,6 +539,9 @@ function moveToAgecat(alpha) {
     hideYear();
     hideAgecat();
     hideScreentime();
+    hideSorgen();
+    hideReach();
+    hideDay();
 
 
     force.on('tick', function (e) {
@@ -513,6 +590,9 @@ function moveToAgecat(alpha) {
     hideYear();
     hideSex();
     hideAgecat();
+    hideSorgen();
+    hideReach();
+    hideDay();
 
 
     force.on('tick', function (e) {
@@ -551,8 +631,166 @@ function moveToAgecat(alpha) {
     }    
 
   
+//* ------------------------------------------------------------------
+//
+// SORGEN / SORGENBAROMETER
+//
+// -----------------------------------------------------------------*/
+    
+  function splitBubblesintoSorgen() {
+    showSorgen();
+    hideYear();
+    hideSex();
+    hideAgecat();
+    hideScreentime();
+    hideReach();
+    hideDay();
+
+
+    force.on('tick', function (e) {
+      bubbles.each(moveToSorgen(e.alpha))
+        .attr('cx', function (d) { return d.x; })
+        .attr('cy', function (d) { return d.y; });
+    });
+
+    force.start();
+  }
+
+  function moveToSorgen(alpha) {
+    return function (d) {
+      var target = sorgenCenters[d.sorgen];
+      d.x = d.x + (target.x - d.x) * damper * alpha * 1.1;
+      d.y = d.y + (target.y - d.y) * damper * alpha * 1.1;
+    };
+  }
+
+  function hideSorgen() {
+    svg.selectAll('.sorgen').remove();
+  }
+
+  function showSorgen() {
+
+    var sorgenData = d3.keys(sorgenTitleX);
+    var sorgen = svg.selectAll('.sorgen')
+      .data(sorgenData);
+
+    sorgen.enter().append('text')
+      .attr('class', 'sorgen')
+      .attr('x', function (d) { return sorgenTitleX[d]; })
+      .attr('y', 65)
+      .attr('text-anchor', 'middle')
+      .text(function (d) { return d; });
+    }    
+
+      
+    
+//* ------------------------------------------------------------------
+//
+// REACH / GRIFFWEITEKAT
+//
+// -----------------------------------------------------------------*/
+    
+  function splitBubblesintoReach() {
+    showReach();
+    hideYear();
+    hideSex();
+    hideAgecat();
+    hideScreentime();
+    hideSorgen();
+    hideDay();
+
+
+    force.on('tick', function (e) {
+      bubbles.each(moveToReach(e.alpha))
+        .attr('cx', function (d) { return d.x; })
+        .attr('cy', function (d) { return d.y; });
+    });
+
+    force.start();
+  }
+
+  function moveToReach(alpha) {
+    return function (d) {
+      var target = reachCenters[d.reach];
+      d.x = d.x + (target.x - d.x) * damper * alpha * 1.1;
+      d.y = d.y + (target.y - d.y) * damper * alpha * 1.1;
+    };
+  }
+
+  function hideReach() {
+    svg.selectAll('.reach').remove();
+  }
+
+  function showReach() {
+
+    var reachData = d3.keys(reachTitleX);
+    var reach = svg.selectAll('.reach')
+      .data(reachData);
+
+    reach.enter().append('text')
+      .attr('class', 'reach')
+      .attr('x', function (d) { return reachTitleX[d]; })
+      .attr('y', 65)
+      .attr('text-anchor', 'middle')
+      .text(function (d) { return d; });
+    }    
+
+        
+//* ------------------------------------------------------------------
+//
+// Day / TagohneHandy
+//
+// -----------------------------------------------------------------*/
+    
+  function splitBubblesintoDay() {
+    showDay();
+    hideYear();
+    hideSex();
+    hideAgecat();
+    hideScreentime();
+    hideSorgen();
+    hideReach();
+
+
+
+    force.on('tick', function (e) {
+      bubbles.day(moveToDay(e.alpha))
+        .attr('cx', function (d) { return d.x; })
+        .attr('cy', function (d) { return d.y; });
+    });
+
+    force.start();
+  }
+
+  function moveToDay(alpha) {
+    return function (d) {
+      var target = dayCenters[d.day];
+      d.x = d.x + (target.x - d.x) * damper * alpha * 1.1;
+      d.y = d.y + (target.y - d.y) * damper * alpha * 1.1;
+    };
+  }
+
+  function hideDay() {
+    svg.selectAll('.day').remove();
+  }
+
+  function showDay() {
+
+    var dayData = d3.keys(dayTitleX);
+    var day = svg.selectAll('.day')
+      .data(dayData);
+
+    day.enter().append('text')
+      .attr('class', 'day')
+      .attr('x', function (d) { return dayTitleX[d]; })
+      .attr('y', 65)
+      .attr('text-anchor', 'middle')
+      .text(function (d) { return d; });
+    }    
+
     
     
+   
 //* ------------------------------------------------------------------
 //
 // WISSENSCHAFTSWOCHE F
@@ -578,6 +816,12 @@ function moveToAgecat(alpha) {
       splitBubblesintoSex();
     } else if (displayName === 'screentime') {
       splitBubblesintoScreentime();
+    } else if (displayName === 'sorgen') {
+      splitBubblesintoSorgen();
+    } else if (displayName === 'reach') {
+     splitBubblesintoReach();
+    } else if (displayName === 'day') {
+      splitBubblesintoDay();
     } else {
       groupBubbles();
     }
@@ -623,6 +867,15 @@ function moveToAgecat(alpha) {
                   '</span><br/>' +
                   '<span class="name">Bildschirmzeit: </span><span class="value">' +
                   d.screentime +
+                  '</span><br/>' +
+                  '<span class="name">"Ich mache mir Sorgen um meine Daten": </span><span class="value">' +
+                  d.sorgentext +
+                  '</span><br/>' +
+                   '<span class="name">"Ein Tag ohne Handy": </span><span class="value">' +
+                  d.daytext +
+                  '</span><br/>' +
+                  '<span class="name">"Mein Handy liegt im Schlaf in Griffweite": </span><span class="value">' +
+                  d.reachtext +
                   '</span><br/>' +
                   '<span class="name">"Umfragejahr": </span><span class="value">' +
                   d.year +
