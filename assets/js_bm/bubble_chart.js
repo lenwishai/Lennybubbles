@@ -142,7 +142,6 @@ var agecatCenters = { // Center locations of the bubbles.
   };
     
     
-    
 
 // Vierter Button: Bildschirmzeit
     
@@ -161,7 +160,18 @@ var agecatCenters = { // Center locations of the bubbles.
     '2h bis 3h': 330,
     '3h bis 4h': 540,
     '4h bis 5h': 730,
-    'mehr als 5h': 900
+    'mehr als 5h': 900,
+    '"Wie viel Zeit verbringen sie durchschnittlich pro Tag an ihren Geräten zur Unterhaltung?"': 540
+  };
+    
+    var screentimeTitleY = {  // Y locations of the year titles.
+    'bis 1h': 65,
+    '1h bis 2h': 65,
+    '2h bis 3h': 65,
+    '3h bis 4h': 65,
+    '4h bis 5h': 65,
+    'mehr als 5h': 65,
+    '"Wie viel Zeit verbringen sie durchschnittlich pro Tag an ihren Geräten zur Unterhaltung?"': 35
   };
     
     
@@ -179,9 +189,23 @@ var agecatCenters = { // Center locations of the bubbles.
     'Stimmt ganz': 200,
     'Stimmt eher': 380,
     'Stimmt eher nicht': 660,
-    'Stimmt gar nicht': 920
+    'Stimmt gar nicht': 920,
+    '"Ich mache mir Sorgen um meine Daten"': 540
+    
+    
     
   };
+    
+    var sorgenTitleY = {  // Y locations of the year titles.
+    'Stimmt ganz': 65,
+    'Stimmt eher': 65,
+    'Stimmt eher nicht': 65,
+    'Stimmt gar nicht': 65,
+    '"Ich mache mir Sorgen um meine Daten"': 35
+        
+    
+  };
+
 
    // Sechster Button: Griffweite
     
@@ -197,7 +221,18 @@ var agecatCenters = { // Center locations of the bubbles.
     'Ja': 200,
     'eher ja': 460,
     'eher nein': 670,
-    'nein': 890
+    'nein': 890,
+    '"Mein Smartphone liegt auch beim Schlafen immer in Griffweite"': 540
+    
+  };
+    
+var reachTitleY = {  // Y locations of the year titles.
+    'Ja': 65,
+    'eher ja': 65,
+    'eher nein': 65,
+    'nein': 65,
+    '"Mein Smartphone liegt auch beim Schlafen immer in Griffweite"': 35
+    
     
   };
 
@@ -213,9 +248,20 @@ var agecatCenters = { // Center locations of the bubbles.
 
   var dayTitleX = {  // X locations of the year titles.
     'Stimmt ganz': 200,
-    'Stimmt eher': 380,
-    'Stimmt eher nicht': 660,
-    'Stimmt gar nicht': 920
+    'Stimmt eher': 460,
+    'Stimmt eher nicht': 680,
+    'Stimmt gar nicht': 920,
+    '"Ich kann auch gut mal ohne Smartphone klar kommen"': 540
+    
+  };
+
+    var dayTitleY = {  // Y locations of the year titles.
+    'Stimmt ganz': 65,
+    'Stimmt eher': 65,
+    'Stimmt eher nicht': 65,
+    'Stimmt gar nicht': 65,
+    '"Ich kann auch gut mal ohne Smartphone klar kommen"': 35
+        
     
   };
 
@@ -294,8 +340,8 @@ var agecatCenters = { // Center locations of the bubbles.
         reach: d.griffweitekat,
         reachtext: d.griffweite,
           
-        day: d.verzicht,
-        daytext: d.verzichtkat,
+        day: d.verzichtkat,
+        daytext: d.verzicht,
         
         x: Math.random() * 900,
         y: Math.random() * 800
@@ -625,7 +671,7 @@ function moveToAgecat(alpha) {
     screentime.enter().append('text')
       .attr('class', 'screentime')
       .attr('x', function (d) { return screentimeTitleX[d]; })
-      .attr('y', 65)
+      .attr('y', function (d) { return screentimeTitleY[d]; })
       .attr('text-anchor', 'middle')
       .text(function (d) { return d; });
     }    
@@ -677,7 +723,7 @@ function moveToAgecat(alpha) {
     sorgen.enter().append('text')
       .attr('class', 'sorgen')
       .attr('x', function (d) { return sorgenTitleX[d]; })
-      .attr('y', 65)
+      .attr('y', function (d) { return sorgenTitleY[d]; })
       .attr('text-anchor', 'middle')
       .text(function (d) { return d; });
     }    
@@ -730,7 +776,7 @@ function moveToAgecat(alpha) {
     reach.enter().append('text')
       .attr('class', 'reach')
       .attr('x', function (d) { return reachTitleX[d]; })
-      .attr('y', 65)
+      .attr('y', function (d) { return reachTitleY[d]; })
       .attr('text-anchor', 'middle')
       .text(function (d) { return d; });
     }    
@@ -738,7 +784,7 @@ function moveToAgecat(alpha) {
         
 //* ------------------------------------------------------------------
 //
-// Day / TagohneHandy
+// Day / Verzicht
 //
 // -----------------------------------------------------------------*/
     
@@ -754,7 +800,7 @@ function moveToAgecat(alpha) {
 
 
     force.on('tick', function (e) {
-      bubbles.day(moveToDay(e.alpha))
+      bubbles.each(moveToDay(e.alpha))
         .attr('cx', function (d) { return d.x; })
         .attr('cy', function (d) { return d.y; });
     });
@@ -783,7 +829,7 @@ function moveToAgecat(alpha) {
     day.enter().append('text')
       .attr('class', 'day')
       .attr('x', function (d) { return dayTitleX[d]; })
-      .attr('y', 65)
+      .attr('y', function (d) { return dayTitleY[d]; })
       .attr('text-anchor', 'middle')
       .text(function (d) { return d; });
     }    
@@ -852,7 +898,7 @@ function moveToAgecat(alpha) {
 
   var fillColor = d3.scale.ordinal()
     .domain(['1','2','3', '4','5','6'])
-    .range(['#F7CAD0', '#ff006e', '#48CAE4', '#0096C7','#023E8A','#03045E']);
+    .range(['#3a86ff', '#ffbe0b', '#fb5607', '#ff006e','#8338ec']);
 
   /* Tooltip-Funktion*/
   function showDetail(d) {
@@ -871,7 +917,7 @@ function moveToAgecat(alpha) {
                   '<span class="name">"Ich mache mir Sorgen um meine Daten": </span><span class="value">' +
                   d.sorgentext +
                   '</span><br/>' +
-                   '<span class="name">"Ein Tag ohne Handy": </span><span class="value">' +
+                   '<span class="name">"Ich kann auch ein Tag auf das Handy verzichten": </span><span class="value">' +
                   d.daytext +
                   '</span><br/>' +
                   '<span class="name">"Mein Handy liegt im Schlaf in Griffweite": </span><span class="value">' +

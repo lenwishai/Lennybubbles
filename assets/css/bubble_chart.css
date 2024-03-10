@@ -88,6 +88,8 @@ height: 70px;
   height: 600px;
   clear: both;
   margin-bottom: 10px;
+   font-size: 15px;
+    font-weight:bold;
 }
 
 .line, .duration, .weekday{
